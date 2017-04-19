@@ -1,0 +1,32 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+  foodcritic:
+    enabled: true
+  markdownlint:
+      enabled: true
+      checks:
+        MD013:
+          enabled: false
+ratings:
+  paths:
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.module"
+  - "**.php"
+  - "**.py"
+  - "**.rb"
+  - "**.md"
+exclude_paths: []
