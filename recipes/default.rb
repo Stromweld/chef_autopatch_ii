@@ -16,3 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+directory 'Auto Patch Working Directory' do
+  path node['autopatch_ii']['working_dir']
+  action :create
+end
+
+include_recipe 'autopatch_ii::firstrun_patches'
+include_recipe { windows? ? 'autopatch_ii::windows' : 'autopatch_ii::linux' }
