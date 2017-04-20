@@ -17,19 +17,19 @@
 # limitations under the License.
 
 default['autopatch_ii']['disable'] = false
-default['autopatch_ii']['domain'] = 'teamfreeze.com'
+default['autopatch_ii']['domain'] = 'example.com'
 default['autopatch_ii']['task_username'] = 'SYSTEM'
 default['autopatch_ii']['task_frequency'] = :monthly
 default['autopatch_ii']['task_frequency_modifier'] = 'THIRD'
 default['autopatch_ii']['task_months'] = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV'
 default['autopatch_ii']['task_days'] = 'TUE'
 default['autopatch_ii']['task_start_time'] = '04:00'
-default['autopatch_ii']['working_dir'] = windows? ? 'C:\chef_autopatch' : '/var/log/chef_autopatch'
+default['autopatch_ii']['working_dir'] = node['os'] == 'windows' ? 'C:\chef_autopatch' : '/var/log/chef_autopatch'
 default['autopatch_ii']['download_install_splay_max_seconds'] = 3600
 default['autopatch_ii']['email_notification_mode'] = 'Always'
-default['autopatch_ii']['email_to_addresses'] = '"SysEngineers@nativex.com"'
-default['autopatch_ii']['email_from_address'] = "#{node['hostname']}@nativex.com"
-default['autopatch_ii']['email_smtp_server'] = 'paw2al-smtprl01.teamfreeze.com'
+default['autopatch_ii']['email_to_addresses'] = '"test@example.com"'
+default['autopatch_ii']['email_from_address'] = "#{node['hostname']}@example.com"
+default['autopatch_ii']['email_smtp_server'] = 'smtp.example.com'
 default['autopatch_ii']['auto_reboot_enabled'] = true
 default['autopatch_ii']['updates_to_skip'] = []
 default['autopatch_ii']['update_command_options'] = ''

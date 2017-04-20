@@ -68,7 +68,7 @@ when 'windows'
   file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
     content 'First run of linux patches will only run if this file exists.'
     action :create_if_missing
-    notifies :run, 'execute[win-update]', :immediately
+    notifies :run, 'powershell_script[win-update]', :immediately
   end
 else
   raise 'OS unsupported for firstrun_patches recipe'

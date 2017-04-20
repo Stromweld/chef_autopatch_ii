@@ -28,7 +28,7 @@ windows_task 'autopatch' do
   user node['autopatch_ii']['task_username']
   frequency node['autopatch_ii']['task_frequency']
   frequency_modifier node['autopatch_ii']['task_frequency_modifier']
-  day node['autopatch_ii']['task_days'] if node['autopatch_ii']['task_frequency'] == :weekly
+  day node['autopatch_ii']['task_days']
   months node['autopatch_ii']['task_months']
   start_time node['autopatch_ii']['task_start_time']
   cwd 'C:'
