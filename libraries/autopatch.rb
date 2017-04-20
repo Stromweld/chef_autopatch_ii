@@ -42,7 +42,7 @@ class Chef
         while weekday(weekly_specifier) != Date.new(year, month, first_day_occurance).wday
           first_day_occurance += 1
         end
-        first_day_occurance + ( WEEKS.index(week) * 7)
+        first_day_occurance + (WEEKS.index(week) * 7)
       end
 
       def self.next_monthly_date(monthly_specifier, hour, minute)
@@ -55,15 +55,7 @@ class Chef
           minute
         )
 
-        if current_time > current_patch_time
-          if current_time.month == 12
-            date = monthly_date(current_time.year + 1, 1, monthly_specifier)
-          else
-            date = monthly_date(current_time.year, current_time.month + 1, monthly_specifier)
-          end
-        else
-          date = current_patch_time
-        end
+        date = current_time > current_patch_time ? (current_time.month == 12 ? monthly_date(current_time.year + 1, 1, monthly_specifier) : monthly_date(current_time.year, current_time.month + 1, monthly_specifier)) : current_patch_time
 
         date
       end

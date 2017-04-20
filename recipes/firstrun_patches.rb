@@ -24,13 +24,6 @@ when 'linux'
     action :nothing
     notifies :request_reboot, 'reboot[firstrun_patches]', :delayed
   end
-
-  file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
-    content 'First run of linux patches will only run if this file exists.'
-    action :create_if_missing
-    notifies :run, 'execute[linux-upgrade-once]', :immediately
-  end
-
 when 'windows'
   powershell_script 'win-update' do
     code <<-EOH
@@ -65,13 +58,14 @@ when 'windows'
     ignore_failure true
     notifies :request_reboot, 'reboot[firstrun_patches]', :delayed
   end
-  file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
-    content 'First run of linux patches will only run if this file exists.'
-    action :create_if_missing
-    notifies :run, 'powershell_script[win-update]', :immediately
-  end
 else
   raise 'OS unsupported for firstrun_patches recipe'
+end
+
+file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
+  content 'First run of patches will only run if this file exists.'
+  action :create_if_missing
+  notifies :run, "execute[#{node['os'] == 'windows' ? 'win-update' : 'linux-upgrade-once'}]", :immediately
 end
 
 reboot 'firstrun_patches' do

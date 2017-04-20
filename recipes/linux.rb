@@ -83,13 +83,11 @@ package 'mailx'
 
 # Ensure the autopatch.log file is fresh each month and also so it doesn't infinitely grow.
 logrotate_app 'chef-autopatch' do
-  path      "#{node['autopatch_ii']['working_dir']}/autopatch.log"
-  options   ['missingok', 'nocompress', 'notifempty']
+  path "#{node['autopatch_ii']['working_dir']}/autopatch.log"
+  options %w(missingok nocompress notifempty)
   frequency 'daily'
-  rotate    3
+  rotate 3
 end
-
-
 
 include_recipe 'cron'
 
@@ -103,7 +101,8 @@ unless node['autopatch_ii']['disable']
     next_date = AutoPatch.next_monthly_date(
       "#{frequency_mod} #{frequency_day}",
       taskhour,
-      taskminute)
+      taskminute
+    )
     day = next_date.day
     month = next_date.month
     weekday = '*'

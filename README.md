@@ -63,6 +63,7 @@ Just use the `node["autopatch_ii"]['task_frequency'] = :weekly` attribute to ove
 ### Automatic patching of large numbers of nodes
 
 If you're auto patching many nodes at once, you can optionally modify the splay to prevent denial of service against your network, update server(s), and resources:
+
 * Adding `node["autopatch_ii"]["splay"]`
 
 ### Using roles to specify auto patching groups
@@ -112,20 +113,15 @@ Example role that then could be added to 10pm nodes:
 * Run chef-client on your node
 
 ## License and Author
-      
+
 Author:: Brian Flad (<bflad417@gmail.com>)
+
 Author:: Corey Hemminger (<hemminger@hotmail.com>)
 
 Copyright:: 2017
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at 
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
