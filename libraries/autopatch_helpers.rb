@@ -1,6 +1,6 @@
 #
 # Cookbook:: autopatch_ii
-# Recipe:: default
+# Library:: autopatch_helpers
 #
 # Copyright:: 2017, Corey Hemminger
 #
@@ -16,10 +16,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-directory 'Auto Patch Working Directory' do
-  path node['autopatch_ii']['working_dir']
-  action :create
+# Module to translate short name to full name
+module AutoPatchHelper
+  def self.getLCaseWeekdayFromAbbreviation(abbreviatedWeekday)
+    case abbreviatedWeekday.downcase
+    when 'mon'
+      'monday'
+    when 'tue'
+      'tuesday'
+    when 'wed'
+      'wednesday'
+    when 'thu'
+      'thursday'
+    when 'fri'
+      'friday'
+    when 'sat'
+      'saturday'
+    when 'sun'
+      'sunday'
+    else
+      raise "Could not determine weekday from abbreviation '#{abbreviatedWeekday}'"
+    end
+  end
 end
-
-include_recipe 'autopatch_ii::firstrun_patches'
-include_recipe node['os'] == 'windows' ? 'autopatch_ii::windows' : 'autopatch_ii::linux'

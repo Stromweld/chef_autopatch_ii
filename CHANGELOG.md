@@ -1,12 +1,8 @@
-# CHANGELOG for timezone_ii
+# CHANGELOG for autopatch_ii
 
-## 2.0.0 (4/19/2017)
+## 1.0.1 (4/20/2017)
 
-- [Corey Hemminger] - changed hash rockets to new hash style
-
-## 1.0.1 (4/18/2017)
-
-- [Corey Hemminger] - fixed windows idempotency
+- [Corey Hemminger] - Fixed bugs and tested to be working
 
 ## 1.0.0 (4/18/2017)
 
