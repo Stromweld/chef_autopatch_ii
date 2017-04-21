@@ -65,7 +65,7 @@ end
 file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
   content 'First run of patches will only run if this file exists.'
   action :create_if_missing
-  notifies :run, "execute[#{node['os'] == 'windows' ? 'win-update' : 'linux-upgrade-once'}]", :immediately
+  notifies :run, node['os'] == 'windows' ? 'powershell_script[win-update]' : 'execute[linux-upgrade-once]', :immediately
 end
 
 reboot 'firstrun_patches' do

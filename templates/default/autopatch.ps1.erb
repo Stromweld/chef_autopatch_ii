@@ -303,14 +303,14 @@ try
         $AutoRebootAllowed = $<%= node['autopatch_ii']['auto_reboot_enabled'] %>
         if($AutoRebootAllowed)
         {
-            Remove-Item c:\updates-firstrun-lockfile
+            Remove-Item <%= "#{Chef::Config[:file_cache_path]}/autopatch.txt}" %>
             WriteHostAndLogFile "Reboot is required, and Auto reboot is allowed on this machine. Rebooting NOW!"
             SendEmailNotificationIfRequired -someErrorOccurred $AnyUpdateFailed -manualRebootRequired $false -bodyMessage "Reboot is required, and Auto reboot is allowed on this machine. Rebooting NOW!"
             Restart-Computer -Force
         } #End If $AutoReboot
         else
         {
-            Remove-Item c:\updates-firstrun-lockfile
+            Remove-Item <%= "#{Chef::Config[:file_cache_path]}/autopatch.txt}" %>
             WriteHostAndLogFile "Manual reboot required! AutoReboot is NOT allowed on this machine."
             SendEmailNotificationIfRequired -someErrorOccurred $AnyUpdateFailed -manualRebootRequired $true -bodyMessage "Manual reboot required."
             return "Reboot is required, but not allowed by settings. Please do the reboot manually."
@@ -318,14 +318,14 @@ try
     } #End If $NeedsReboot
     else
     {
-        Remove-Item c:\updates-firstrun-lockfile
+        Remove-Item <%= "#{Chef::Config[:file_cache_path]}/autopatch.txt}" %>
         WriteHostAndLogFile "Reboot is not required."
         SendEmailNotificationIfRequired -someErrorOccurred $AnyUpdateFailed -manualRebootRequired $false -bodyMessage "No reboot required."
     }
 }
 catch
 {
-    Remove-Item c:\updates-firstrun-lockfile
+    Remove-Item <%= "#{Chef::Config[:file_cache_path]}/autopatch.txt}" %>
     WriteErrorAndLogFile $Error[0]
     WriteErrorAndLogFile ($Error[0].ErrorRecord.Exception | gm)
     SendEmailNotificationIfRequired -someErrorOccurred $true -bodyMessage "Unexpected Error!!" -manualRebootRequired $false

@@ -55,8 +55,15 @@ class Chef
           minute
         )
 
-        date = current_time > current_patch_time ? (current_time.month == 12 ? monthly_date(current_time.year + 1, 1, monthly_specifier) : monthly_date(current_time.year, current_time.month + 1, monthly_specifier)) : current_patch_time
-
+        date = if current_time > current_patch_time
+                 if current_time.month == 12
+                   monthly_date(current_time.year + 1, 1, monthly_specifier)
+                 else
+                   monthly_date(current_time.year, current_time.month + 1, monthly_specifier)
+                 end
+               else
+                 current_patch_time
+               end
         date
       end
 

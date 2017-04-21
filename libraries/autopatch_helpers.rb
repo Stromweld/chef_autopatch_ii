@@ -16,8 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Module to translate short name to full name
 module AutoPatchHelper
-  def self.getLCaseWeekdayFromAbbreviation( abbreviatedWeekday )
+  def self.getLCaseWeekdayFromAbbreviation(abbreviatedWeekday)
     case abbreviatedWeekday.downcase
     when 'mon'
       'monday'
