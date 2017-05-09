@@ -32,7 +32,7 @@ default['autopatch_ii']['email_from_address'] = "#{node['hostname']}@example.com
 default['autopatch_ii']['email_smtp_server'] = 'smtp.example.com'
 default['autopatch_ii']['auto_reboot_enabled'] = true
 default['autopatch_ii']['updates_to_skip'] = []
-default['autopatch_ii']['update_command_options'] = ''
+default['autopatch_ii']['update_command_options'] = '--skip-broken'
 
 # This attribute is used internally - it should never be set outside the cookbook itself, hence the 'private' designation
 default['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] = false
