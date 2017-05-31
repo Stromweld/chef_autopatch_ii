@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.0.3 (5/31/2017)
+
+- [Corey Hemminger] - fixed typo in windows template
+
 ## 1.0.2 (5/9/2017)
 
 - [Corey Hemminger] - updated firstrun_patches recipe to use attributes for yum options and exclude packages
