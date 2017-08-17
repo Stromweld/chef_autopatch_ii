@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.0.4 (8/17/2017)
+
+- [Corey Hemminger] - fixed variables not being set when autopatch is disabled causing errors in resource blocks
+
 ## 1.0.3 (5/31/2017)
 
 - [Corey Hemminger] - fixed typo in windows template

@@ -91,25 +91,23 @@ end
 
 include_recipe 'cron'
 
-unless node['autopatch_ii']['disable']
-  if node['autopatch_ii']['task_frequency'] == :weekly
-    day = '*'
-    month = '*'
-    weekday = AutoPatch.weekday(frequency_day)
-    Chef::Log.info("Auto patch scheduled weekly on #{frequency_day} at #{taskhour}:#{taskminute}")
-  elsif node['autopatch_ii']['task_frequency'] == :monthly
-    next_date = AutoPatch.next_monthly_date(
-      "#{frequency_mod} #{frequency_day}",
-      taskhour,
-      taskminute
-    )
-    day = next_date.day
-    month = next_date.month
-    weekday = '*'
-    Chef::Log.info("Auto patch scheduled for #{next_date.strftime('%Y-%m-%d')} at #{taskhour}:#{taskminute}")
-  else
-    Chef::Application.fatal!('Missing autopatch_ii :monthly or :weekly specification.')
-  end
+if node['autopatch_ii']['task_frequency'] == :weekly
+  day = '*'
+  month = '*'
+  weekday = AutoPatch.weekday(frequency_day)
+  Chef::Log.info("Auto patch scheduled weekly on #{frequency_day} at #{taskhour}:#{taskminute}")
+elsif node['autopatch_ii']['task_frequency'] == :monthly
+  next_date = AutoPatch.next_monthly_date(
+    "#{frequency_mod} #{frequency_day}",
+    taskhour,
+    taskminute
+  )
+  day = next_date.day
+  month = next_date.month
+  weekday = '*'
+  Chef::Log.info("Auto patch scheduled for #{next_date.strftime('%Y-%m-%d')} at #{taskhour}:#{taskminute}")
+else
+  Chef::Application.fatal!('Missing autopatch_ii :monthly or :weekly specification.')
 end
 
 template '/usr/local/sbin/autopatch' do
