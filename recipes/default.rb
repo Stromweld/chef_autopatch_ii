@@ -21,5 +21,5 @@ directory 'Auto Patch Working Directory' do
   action :create
 end
 
-include_recipe 'autopatch_ii::firstrun_patches'
+# include_recipe 'autopatch_ii::firstrun_patches'
 include_recipe node['os'] == 'windows' ? 'autopatch_ii::windows' : 'autopatch_ii::linux'
