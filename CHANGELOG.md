@@ -1,5 +1,10 @@
 # CHANGELOG for autopatch_ii
 
+
+## 1.2.0 (6/25/2020)
+
+- [Corey Hemminger] - addeded debian/ubuntu support to firstrun_patches recipe
+
 ## 1.1.0 (6/25/2020)
 
 - [Corey Hemminger] - turned cron job command into attribute instead of hard coded, added debian/ubuntu support, cookstyle updates

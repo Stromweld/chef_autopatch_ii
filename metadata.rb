@@ -3,7 +3,7 @@ maintainer 'Corey Hemminger'
 maintainer_email 'hemminger@hotmail.com'
 license 'Apache-2.0'
 description 'Installs/Configures autopatch_ii'
-version '1.1.0'
+version '1.2.0'
 chef_version '>= 12.6'
 
 # The `issues_url` points to the location where issues for this cookbook are

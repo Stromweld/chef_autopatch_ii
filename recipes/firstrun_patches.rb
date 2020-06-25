@@ -19,10 +19,21 @@
 case node['os']
 when 'linux'
   # Action is nothing so that normally no action is taken; :run needs to be specifically invoked by lockfile resource
+  cmd = value_for_platform_family(
+    debian: (<<~EOS
+              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark hold #{node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ')}" }
+              apt-get update
+              apt-get upgrade -y
+              apt-get autoremove
+              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark unhold #{node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ')}" }
+            EOS
+            ),
+    default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip'].each { |skip| "-x #{skip}" } unless node['autopatch_ii']['updates_to_skip'].empty?}"
+  )
   execute 'linux-upgrade-once' do
-    command "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip'].each { |skip| "-x #{skip}" } unless node['autopatch_ii']['updates_to_skip'].empty?}"
+    command cmd
     action :nothing
-    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed
+    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if default['autopatch_ii']['auto_reboot_enabled'] = true
   end
 when 'windows'
   powershell_script 'win-update' do
@@ -56,7 +67,7 @@ when 'windows'
     EOH
     action :nothing
     ignore_failure true
-    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed
+    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if default['autopatch_ii']['auto_reboot_enabled']
   end
 else
   raise 'OS unsupported for firstrun_patches recipe'
