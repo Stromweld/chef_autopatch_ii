@@ -2,7 +2,7 @@
 
 ## 1.1.0 (6/25/2020)
 
-- [Corey Hemminger] - turned cron job command into attribute instead of hard coded, cookstyle updates
+- [Corey Hemminger] - turned cron job command into attribute instead of hard coded, added debian/ubuntu support, cookstyle updates
 
 ## 1.0.4 (8/17/2017)
 

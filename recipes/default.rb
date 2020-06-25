@@ -22,4 +22,4 @@ directory 'Auto Patch Working Directory' do
 end
 
 # include_recipe 'autopatch_ii::firstrun_patches'
-include_recipe node['os'] == 'windows' ? 'autopatch_ii::windows' : 'autopatch_ii::linux'
+include_recipe platform_family?('windows') ? 'autopatch_ii::windows' : 'autopatch_ii::linux'

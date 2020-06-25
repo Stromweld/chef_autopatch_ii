@@ -25,8 +25,8 @@ class Chef
   class Recipe
     # Chef::Recipe::AutoPatch class
     class AutoPatch
-      WEEKS = %w(first second third fourth) unless defined?(WEEKS)
-      WEEKDAYS = %w(sunday monday tuesday wednesday thursday friday saturday) unless defined?(WEEKDAYS)
+      WEEKS = %w(first second third fourth).freeze unless defined?(WEEKS)
+      WEEKDAYS = %w(sunday monday tuesday wednesday thursday friday saturday).freeze unless defined?(WEEKDAYS)
 
       def self.monthly_date(year, month, monthly_specifier)
         Date.new(year, month, monthly_day(year, month, monthly_specifier))
@@ -36,12 +36,10 @@ class Chef
         week, weekly_specifier = monthly_specifier.split(' ')
         week.downcase!
         weekly_specifier.downcase!
-        Chef::Application.fatal!('Unknown week specified.') unless WEEKS.include?(week)
+        raise('Unknown week specified.') unless WEEKS.include?(week)
 
         first_day_occurance = 1
-        while weekday(weekly_specifier) != Date.new(year, month, first_day_occurance).wday
-          first_day_occurance += 1
-        end
+        first_day_occurance += 1 while weekday(weekly_specifier) != Date.new(year, month, first_day_occurance).wday
         first_day_occurance + (WEEKS.index(week) * 7)
       end
 
@@ -68,7 +66,7 @@ class Chef
       end
 
       def self.weekday(weekly_specifier)
-        Chef::Application.fatal!('Unknown weekday specified.') unless WEEKDAYS.include?(weekly_specifier)
+        raise('Unknown weekday specified.') unless WEEKDAYS.include?(weekly_specifier)
         WEEKDAYS.index(weekly_specifier)
       end
     end

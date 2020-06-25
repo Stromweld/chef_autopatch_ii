@@ -32,7 +32,7 @@ unless node['autopatch_ii']['disabled']
       begin
         frequency_day = AutoPatchHelper.getLCaseWeekdayFromAbbreviation node['autopatch_ii']['task_days']
       rescue
-        Chef::Application.fatal!("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_days']}' task_days attribute while using ':monthly' task_frequency!! Valid values are MON, TUE, WED, THU, FRI, SAT, SUN")
+        raise("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_days']}' task_days attribute while using ':monthly' task_frequency!! Valid values are MON, TUE, WED, THU, FRI, SAT, SUN")
       end
 
       # Companies may have a policy to not do patches in December.  cron does not support this notion of skipping a month very easily.
@@ -47,39 +47,40 @@ unless node['autopatch_ii']['disabled']
           if node['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] == true
             if node['autopatch_ii']['disable'] == true
               # Re-enable it
-              Chef::Log::debug("Re-enabling autopatch_ii for month #{DateTime.now.strftime('%^b')}")
+              Chef::Log.debug("Re-enabling autopatch_ii for month #{DateTime.now.strftime('%^b')}")
               node.override['autopatch_ii']['disable'] = false
             end
             # Reset our flag
             node.override['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] = false
-            Chef::Log::debug('Reset programmatic flag node[\'autopatch_ii\'][\'private_lin_autopatch_disabled_programmatically\'] to false.')
+            Chef::Log.debug('Reset programmatic flag node[\'autopatch_ii\'][\'private_lin_autopatch_disabled_programmatically\'] to false.')
           end
-        else
-          # It is an invalid month.  Disable autopatch_ii if need be and mark the flag that we did it.
-          if node['autopatch_ii']['disable'] == false
-            node.override['autopatch_ii']['disable'] = true
-            node.override['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] = true
-            Chef::Log::debug("Disabling autopatch_ii for month #{DateTime.now.strftime('%^b')}!!")
-          end
+        # It is an invalid month.  Disable autopatch_ii if need be and mark the flag that we did it.
+        elsif node['autopatch_ii']['disable'] == false
+          node.override['autopatch_ii']['disable'] = true
+          node.override['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] = true
+          Chef::Log.debug("Disabling autopatch_ii for month #{DateTime.now.strftime('%^b')}!!")
         end
       end
     else
-      Chef::Application.fatal!("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_frequency_modifier']}' task_frequency_modifier attribute!! Valid values are FIRST, SECOND, THIRD, FOURTH")
+      raise("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_frequency_modifier']}' task_frequency_modifier attribute!! Valid values are FIRST, SECOND, THIRD, FOURTH")
     end # end task_frequency_modifier
   when :weekly, 'weekly'
     frequency_day = ''
     begin
       frequency_day = AutoPatchHelper.getLCaseWeekdayFromAbbreviation node['autopatch_ii']['task_days']
     rescue
-      Chef::Application.fatal!("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_days']}' task_days attribute while using ':weekly' task_frequency!! Valid values are MON, TUE, WED, THU, FRI, SAT, SUN")
+      raise("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_days']}' task_days attribute while using ':weekly' task_frequency!! Valid values are MON, TUE, WED, THU, FRI, SAT, SUN")
     end
   else
-    Chef::Application.fatal!("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_frequency']}' task_frequency attribute!! Valid values are :monthly, :weekly")
+    raise("autopatch_ii on Linux does not support '#{node['autopatch_ii']['task_frequency']}' task_frequency attribute!! Valid values are :monthly, :weekly")
   end
 end
 
-# Ensure mailx is there to send notification emails - it should be, but just in case
-package 'mailx'
+# Ensure postfix is there to send notification emails - it should be, but just in case
+package value_for_platform_family(
+          debian: 'postfix',
+          default: 'mailx'
+        )
 
 # Ensure the autopatch.log file is fresh each month and also so it doesn't infinitely grow.
 logrotate_app 'chef-autopatch' do
@@ -107,11 +108,14 @@ elsif node['autopatch_ii']['task_frequency'] == :monthly
   weekday = '*'
   Chef::Log.info("Auto patch scheduled for #{next_date.strftime('%Y-%m-%d')} at #{taskhour}:#{taskminute}")
 else
-  Chef::Application.fatal!('Missing autopatch_ii :monthly or :weekly specification.')
+  raise('Missing autopatch_ii :monthly or :weekly specification.')
 end
 
 template '/usr/local/sbin/autopatch' do
-  source 'autopatch.sh.erb'
+  source value_for_platform_family(
+           debian: 'autopatch_debian.sh.erb',
+           default: 'autopatch_rhel.sh.erb'
+         )
   owner 'root'
   group 'root'
   mode '0700'

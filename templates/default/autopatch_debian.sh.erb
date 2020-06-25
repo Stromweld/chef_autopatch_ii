@@ -14,7 +14,7 @@ function writeHostAndLogFile {
   echo "`date -Is` (<%= node['hostname'] %>): $1" >> <%= node['autopatch_ii']['working_dir'] %>/autopatch.log
 }
 
-# Send an email 
+# Send an email
 #  Param 1: [string] The subject of the message to send
 #  Param 2: [string] The plain-text body of the message to send
 function sendEmail {
@@ -79,49 +79,34 @@ sleep "$theSleepSeconds"s
 <% else -%>
 writeHostAndLogFile "Download and Install Splay is disabled."
 <% end -%>
-writeHostAndLogFile "Checking for available updates."
-<% if node['autopatch_ii']['updates_to_skip'].length > 0 -%>
-# There are updates configured to be skipped.  Skip them during the update check as well.
-writeHostAndLogFile "Skipping packages: <%= node['autopatch_ii']['updates_to_skip'].join(',') %>"
-<%# The following ruby code maps each 'skippable' element in the array to a string preceded by '-x '. -x is the skip option for yum. Then joins those together with spaces %>
-updatesToSkipYumOptions="<%= node['autopatch_ii']['updates_to_skip'].map { |skipPkg| "-x #{skipPkg}" }.join(' ') %>"
-<% else -%>
-#No configured updates to skip.
-updatesToSkipYumOptions=""
-<% end -%>
-/usr/bin/yum check-update $updatesToSkipYumOptions >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
-checkUpdateExitCode=$?
-if [ $checkUpdateExitCode -eq 100 ]
-then
-  writeHostAndLogFile "There is at least one update available. Commencing update process."
-  writeHostAndLogFile "Beginning yum upgrade now!"
-  <% if node['autopatch_ii']['updates_to_skip'].length > 0 -%>
-  # There are updates configured to be skipped.
-  writeHostAndLogFile "Skipping packages: <%= node['autopatch_ii']['updates_to_skip'].join(',') %>"
-  <% else -%>
-  #No configured updates to skip. updatesToSkipYumOptions should be empty
-  <% end -%>
-  
-  <% if node['autopatch_ii']['update_command_options'].nil? || node['autopatch_ii']['update_command_options'].length == 0 -%>
-  /usr/bin/yum -y upgrade $updatesToSkipYumOptions >> <%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
-  <% else -%>
-  /usr/bin/yum -y upgrade <%= node['autopatch_ii']['update_command_options'] %> $updatesToSkipYumOptions >> <%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
-  <% end -%>
-  yumExitCode=$?
-  writeHostAndLogFile "Finished yum upgrade with exit code $yumExitCode"
-  
-  <% if node['autopatch_ii']['auto_reboot_enabled'] -%>
-  writeHostAndLogFile "Auto Reboot is enabled. Rebooting now!"
-  sendMailIfNecessary true false $yumExitCode
-  reboot
-  <% else -%>
-  writeHostAndLogFile "Auto Reboot is disabled. Manual reboot may be required."
-  sendMailIfNecessary true true $yumExitCode
-  <% end -%>
 
-else
-  writeHostAndLogFile "yum check-update returned with non-100 exit code '$checkUpdateExitCode'. Skipping update process."
-  sendMailIfNecessary false false $checkUpdateExitCode
-fi
+# Hold packages that we don't want to upgrade
+<% unless node['autopatch_ii']['updates_to_skip'].empty? %>
+apt-mark hold <%= node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ') -%> >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
+<% end %>
+
+writeHostAndLogFile "Checking for available updates."
+/usr/bin/apt-get update >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
+
+writeHostAndLogFile "Beginning upgrade now!"
+/usr/bin/apt-get upgrade -y >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
+ExitCode=$?
+
+writeHostAndLogFile "Finished upgrade with exit code $ExitCode"
+/usr/bin/apt-get autoremove >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
+
+# Unhold packages that we don't want to upgrade
+<% unless node['autopatch_ii']['updates_to_skip'].empty? %>
+apt-mark unhold <%= node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ') -%> >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
+<% end %>
+
+<% if node['autopatch_ii']['auto_reboot_enabled'] -%>
+writeHostAndLogFile "Auto Reboot is enabled. Rebooting now!"
+sendMailIfNecessary true false $ExitCode
+reboot
+<% else -%>
+writeHostAndLogFile "Auto Reboot is disabled. Manual reboot may be required."
+sendMailIfNecessary true true $ExitCode
+<% end -%>
 
 exit 0
