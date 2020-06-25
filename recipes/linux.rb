@@ -2,7 +2,7 @@
 # Cookbook:: autopatch_ii
 # Recipe:: linux
 #
-# Copyright:: 2017, Corey Hemminger
+# Copyright:: 2020, Corey Hemminger
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ cron_d 'autopatch' do
   weekday weekday
   day day
   month month
-  command '/usr/local/sbin/autopatch'
+  command node['autopatch_ii']['command']
   action :delete if node['autopatch_ii']['disable']
 end
 

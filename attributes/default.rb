@@ -2,7 +2,7 @@
 # Cookbook:: autopatch_ii
 # Attribute:: default
 #
-# Copyright:: 2017, Corey Hemminger
+# Copyright:: 2020, Corey Hemminger
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,14 @@ default['autopatch_ii']['task_frequency_modifier'] = 'THIRD'
 default['autopatch_ii']['task_months'] = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV'
 default['autopatch_ii']['task_days'] = 'TUE'
 default['autopatch_ii']['task_start_time'] = '04:00'
-default['autopatch_ii']['working_dir'] = node['os'] == 'windows' ? 'C:\chef_autopatch' : '/var/log/chef_autopatch'
+default['autopatch_ii']['working_dir'] = value_for_platform_family(
+  windows: 'C:\chef_autopatch',
+  default: '/var/log/chef_autopatch'
+)
+default['autopatch_ii']['command'] = value_for_platform_family(
+  windows: "PowerShell -ExecutionPolicy Bypass -Command \"#{node['autopatch_ii']['working_dir']}\\autopatch.ps1\"",
+  default: '/usr/local/sbin/autopatch'
+)
 default['autopatch_ii']['download_install_splay_max_seconds'] = 3600
 default['autopatch_ii']['email_notification_mode'] = 'Always'
 default['autopatch_ii']['email_to_addresses'] = '"test@example.com"'

@@ -8,12 +8,13 @@
 
 # Bundler
 Gemfile.lock
+gems.locked
 bin/*
 .bundle/*
 
 # test kitchen
 .kitchen/
-.kitchen.local.yml
+kitchen.local.yml
 
 # Chef
 Berksfile.lock

@@ -35,6 +35,7 @@ Much of this code was copied from chef cookbook auto-patch written by Brian Flad
 | ['autopatch_ii']['task_days'] | 'TUE' | String, which days of the week in short form you want the task to run on |
 | ['autopatch_ii']['task_start_time'] | '04:00' | String, Military time setting for when to run patches |
 | ['autopatch_ii']['working_dir'] | node['os'] == 'windows' ? 'C:\chef_autopatch' : '/var/log/chef_autopatch' | String, Directory for log file and temp files |
+| ['autopatch_ii']['command'] | value_for_platform_family(windows: "PowerShell -ExecutionPolicy Bypass -Command \"#{node['autopatch_ii']['working_dir']}\\autopatch.ps1\"", default: '/usr/local/sbin/autopatch',) | String, cron command to start script |
 | ['autopatch_ii']['download_install_splay_max_seconds'] | 3600 | Integer, Max allowed random time to wait before downloading and installing patches, this way we don't overwhelm on premise patch repo |
 | ['autopatch_ii']['email_notification_mode'] | 'Always' | String, whether to send email after patches and before reboot with status of patch install |
 | ['autopatch_ii']['email_to_addresses'] | '"test@example.com"' | String, email address for nodes to send the email to |
@@ -119,7 +120,7 @@ Author:: Brian Flad (<bflad417@gmail.com>)
 
 Author:: Corey Hemminger (<hemminger@hotmail.com>)
 
-Copyright:: 2017
+Copyright:: 2020
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

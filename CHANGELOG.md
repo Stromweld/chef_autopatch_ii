@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.1.0 (6/25/2020)
+
+- [Corey Hemminger] - turned cron job command into attribute instead of hard coded, cookstyle updates
+
 ## 1.0.4 (8/17/2017)
 
 - [Corey Hemminger] - fixed variables not being set when autopatch is disabled causing errors in resource blocks
