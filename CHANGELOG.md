@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.2.2 (6/26/2020)
+
+- [Corey Hemminger] - fixed copy paste error
+
 ## 1.2.1 (6/26/2020)
 
 - [Corey Hemminger] - fixed reboot if clause

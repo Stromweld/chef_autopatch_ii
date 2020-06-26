@@ -33,7 +33,7 @@ when 'linux'
   execute 'linux-upgrade-once' do
     command cmd
     action :nothing
-    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled'] = true
+    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled']
   end
 when 'windows'
   powershell_script 'win-update' do
