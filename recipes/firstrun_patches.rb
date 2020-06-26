@@ -33,7 +33,7 @@ when 'linux'
   execute 'linux-upgrade-once' do
     command cmd
     action :nothing
-    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if default['autopatch_ii']['auto_reboot_enabled'] = true
+    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled'] = true
   end
 when 'windows'
   powershell_script 'win-update' do
@@ -67,7 +67,7 @@ when 'windows'
     EOH
     action :nothing
     ignore_failure true
-    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if default['autopatch_ii']['auto_reboot_enabled']
+    notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled']
   end
 else
   raise 'OS unsupported for firstrun_patches recipe'

@@ -1,5 +1,8 @@
 # CHANGELOG for autopatch_ii
 
+## 1.2.1 (6/26/2020)
+
+- [Corey Hemminger] - fixed reboot if clause
 
 ## 1.2.0 (6/25/2020)
 
