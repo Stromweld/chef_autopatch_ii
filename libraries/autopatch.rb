@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'date'
+require 'tzinfo'
 
 # autopatch_ii helper logic
 # Chef class
@@ -28,10 +28,6 @@ class Chef
       WEEKS = %w(first second third fourth).freeze unless defined?(WEEKS)
       WEEKDAYS = %w(sunday monday tuesday wednesday thursday friday saturday).freeze unless defined?(WEEKDAYS)
 
-      def self.monthly_date(year, month, monthly_specifier)
-        Date.new(year, month, monthly_day(year, month, monthly_specifier))
-      end
-
       def self.monthly_day(year, month, monthly_specifier)
         week, weekly_specifier = monthly_specifier.split(' ')
         week.downcase!
@@ -39,30 +35,47 @@ class Chef
         raise('Unknown week specified.') unless WEEKS.include?(week)
 
         first_day_occurance = 1
-        first_day_occurance += 1 while weekday(weekly_specifier) != Date.new(year, month, first_day_occurance).wday
+        first_day_occurance += 1 while weekday(weekly_specifier) != Time.new(year, month, first_day_occurance).wday
         first_day_occurance + (WEEKS.index(week) * 7)
       end
 
-      def self.next_monthly_date(monthly_specifier, hour, minute)
-        current_time = Time.now
-        current_patch_time = Time.new(
-          current_time.year,
-          current_time.month,
-          monthly_day(current_time.year, current_time.month, monthly_specifier),
+      def self.next_monthly_date(monthly_specifier, hour, minute, time_zone_name)
+        desired_tz_offset = if time_zone_name
+                              TZInfo::Timezone.get(time_zone_name).current_period.utc_total_offset
+                            else
+                              Time.now.utc_offset
+                            end
+        current_tz_offset = Time.now.utc_offset
+
+        current_time_in_dtz = Time.now.utc + desired_tz_offset
+
+        current_patch_time_in_dtz = Time.new(
+          current_time_in_dtz.year,
+          current_time_in_dtz.month,
+          monthly_day(current_time_in_dtz.year, current_time_in_dtz.month, monthly_specifier),
           hour,
-          minute
+          minute,
+          0,
+          desired_tz_offset
         )
 
-        date = if current_time > current_patch_time
-                 if current_time.month == 12
-                   monthly_date(current_time.year + 1, 1, monthly_specifier)
-                 else
-                   monthly_date(current_time.year, current_time.month + 1, monthly_specifier)
-                 end
-               else
-                 current_patch_time
-               end
-        date
+        target_patch_time = if current_time_in_dtz > current_patch_time_in_dtz
+                              new_year = current_time_in_dtz.year == 12 ? current_time_in_dtz.year + 1 : current_time_in_dtz.year
+                              new_month = current_time_in_dtz.year == 12 ? 1 : current_time_in_dtz.month + 1
+                              Time.new(
+                                new_year,
+                                new_month,
+                                monthly_day(new_year, new_month, monthly_specifier),
+                                hour,
+                                minute,
+                                0,
+                                desired_tz_offset
+                              )
+                            else
+                              current_patch_time_in_dtz
+                            end
+
+        target_patch_time.utc + current_tz_offset
       end
 
       def self.weekday(weekly_specifier)

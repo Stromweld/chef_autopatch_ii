@@ -24,6 +24,7 @@ default['autopatch_ii']['task_frequency_modifier'] = 'THIRD'
 default['autopatch_ii']['task_months'] = 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV'
 default['autopatch_ii']['task_days'] = 'TUE'
 default['autopatch_ii']['task_start_time'] = '04:00'
+default['autopatch_ii']['desired_timezone_name'] = nil
 default['autopatch_ii']['working_dir'] = value_for_platform_family(
   windows: 'C:\chef_autopatch',
   default: '/var/log/chef_autopatch'

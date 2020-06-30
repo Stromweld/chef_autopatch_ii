@@ -21,11 +21,11 @@ when 'linux'
   # Action is nothing so that normally no action is taken; :run needs to be specifically invoked by lockfile resource
   cmd = value_for_platform_family(
     debian: (<<~EOS
-              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark hold #{node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ')}" }
+              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark hold #{node['autopatch_ii']['updates_to_skip']&.to_s}"}
               apt-get update
               apt-get upgrade -y
               apt-get autoremove
-              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark unhold #{node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ')}" }
+              #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark unhold #{node['autopatch_ii']['updates_to_skip']&.to_s}"}
             EOS
             ),
     default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip'].each { |skip| "-x #{skip}" } unless node['autopatch_ii']['updates_to_skip'].empty?}"
@@ -74,7 +74,7 @@ else
 end
 
 file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
-  content 'First run of patches will only run if this file exists.'
+  content 'First run of patches will only run if this file does not exist.'
   action :create_if_missing
   notifies :run, platform_family?('windows') ? 'powershell_script[win-update]' : 'execute[linux-upgrade-once]', :immediately
 end

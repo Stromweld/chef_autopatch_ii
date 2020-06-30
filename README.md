@@ -33,7 +33,8 @@ Much of this code was copied from chef cookbook auto-patch written by Brian Flad
 | ['autopatch_ii']['task_frequency_modifier'] | 'THIRD' | String, used to denote which week of the month you want to run the task |
 | ['autopatch_ii']['task_months'] | 'JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV' | String, CSV list of short names for months you want the task to run in, * is used for all months |
 | ['autopatch_ii']['task_days'] | 'TUE' | String, which days of the week in short form you want the task to run on |
-| ['autopatch_ii']['task_start_time'] | '04:00' | String, Military time setting for when to run patches |
+| ['autopatch_ii']['task_start_time'] | '04:00' | String, 24h Time format for when to start patches |
+| ['autopatch_ii']['desired_timezone_name'] | nil | String, TZ database name <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones> |
 | ['autopatch_ii']['working_dir'] | node['os'] == 'windows' ? 'C:\chef_autopatch' : '/var/log/chef_autopatch' | String, Directory for log file and temp files |
 | ['autopatch_ii']['command'] | value_for_platform_family(windows: "PowerShell -ExecutionPolicy Bypass -Command \"#{node['autopatch_ii']['working_dir']}\\autopatch.ps1\"", default: '/usr/local/sbin/autopatch',) | String, cron command to start script |
 | ['autopatch_ii']['download_install_splay_max_seconds'] | 3600 | Integer, Max allowed random time to wait before downloading and installing patches, this way we don't overwhelm on premise patch repo |

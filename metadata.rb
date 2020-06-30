@@ -3,8 +3,8 @@ maintainer 'Corey Hemminger'
 maintainer_email 'hemminger@hotmail.com'
 license 'Apache-2.0'
 description 'Installs/Configures autopatch_ii'
-version '1.2.2'
-chef_version '>= 12.6'
+version '1.3.0'
+chef_version '>= 14.4'
 
 # The `issues_url` points to the location where issues for this cookbook are
 # tracked.  A `View Issues` link will be displayed on this cookbook's page when
@@ -22,5 +22,6 @@ source_url 'https://github.com/Stromweld/autopatch_ii'
   supports os
 end
 
-depends 'cron'
+gem 'tzinfo'
+
 depends 'logrotate'

@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.3.0 (6/30/2020)
+
+- [Corey Hemminger] - Extended CB to allow targeting of a specific timezone for unified kick off of patches regardless of timezone
+
 ## 1.2.2 (6/26/2020)
 
 - [Corey Hemminger] - fixed copy paste error
