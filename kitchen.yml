@@ -1,6 +1,8 @@
 ---
 driver:
   name: vagrant
+  box_auto_update: true
+  box_auto_prune: true
 
 provisioner:
   name: chef_zero
