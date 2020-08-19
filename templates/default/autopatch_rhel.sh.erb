@@ -93,7 +93,8 @@ updatesToSkipYumOptions=""
 /usr/bin/yum check-update $updatesToSkipYumOptions >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
 checkUpdateExitCode=$?
 
-if [ $checkUpdateExitCode -eq 100 ] then
+if [ $checkUpdateExitCode -eq 100 ]
+then
   writeHostAndLogFile "There is at least one update available. Commencing update process."
   writeHostAndLogFile "Beginning upgrade now!"
 

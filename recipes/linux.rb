@@ -76,9 +76,9 @@ unless node['autopatch_ii']['disabled']
   end
 end
 
-# Ensure postfix is there to send notification emails - it should be, but just in case
+# Ensure mailx is there to send notification emails - it should be, but just in case
 package value_for_platform_family(
-          debian: 'postfix',
+          debian: 's-nail',
           default: 'mailx'
         )
 

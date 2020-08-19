@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.3.1 (2020/08/19)
+
+- [Corey Hemminger] - Updated linux recipe to install proper ubuntu email client and updated script templates to fix error
+
 ## 1.3.0 (6/30/2020)
 
 - [Corey Hemminger] - Extended CB to allow targeting of a specific timezone for unified kick off of patches regardless of timezone

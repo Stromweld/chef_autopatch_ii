@@ -23,7 +23,7 @@ function sendEmail {
   subject=$1
   body="$2"
 
-  echo "$body" | mailx -s "$subject" -r "$from" -a "<%= node['autopatch_ii']['working_dir'] %>/autopatch.log" -S smtp="<%= node['autopatch_ii']['email_smtp_server'] %>" "$to"
+  echo "$body" | s-nail -s "$subject" -r "$from" -a "<%= node['autopatch_ii']['working_dir'] %>/autopatch.log" -S smtp="<%= node['autopatch_ii']['email_smtp_server'] %>" "$to"
 }
 
 # Based on configuration and the status of the process, conditionally sends an email
@@ -80,8 +80,8 @@ sleep "$theSleepSeconds"s
 writeHostAndLogFile "Download and Install Splay is disabled."
 <% end -%>
 
-# Hold packages that we don't want to upgrade
 <% unless node['autopatch_ii']['updates_to_skip'].empty? %>
+# Hold packages that we don't want to upgrade
 apt-mark hold <%= node['autopatch_ii']['updates_to_skip'].map { |skip| skip.to_s }.join(' ') -%> >><%= node['autopatch_ii']['working_dir'] %>/autopatch.log 2>&1
 <% end %>
 
