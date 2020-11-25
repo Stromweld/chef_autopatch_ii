@@ -41,9 +41,8 @@ default['autopatch_ii']['email_smtp_server'] = 'smtp.example.com'
 default['autopatch_ii']['auto_reboot_enabled'] = true
 default['autopatch_ii']['update_command_options'] = '--skip-broken'
 
-# For windows updates_to_skip is a regex string. All matching updates will be filtered out and not installed.
-# . (period) means any character except line break and * (star) means Zero or more times. | (pipe) is OR operator.
-# To match multiple updates in the title use something like '.*Malicious.*|.*KB44.*' to match any update with the word Malicious and all updates with KB ID starting with KB44 anywhere in their titles.
+# For windows updates_to_skip is a regex string. All matching updates will be filtered out and not installed. | (pipe) is OR operator.
+# To match multiple updates in the title use something like 'Malicious|KB44' to match any update with the word Malicious and all updates with KB ID starting with KB44 anywhere in their titles.
 # To skip specific KB's just list them with pipes inbetween like 'KB<number>|KB<number>|KB<number>'
 #
 # For Linux updates_to_skip should be an array of package names not to update
