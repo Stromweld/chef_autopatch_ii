@@ -41,155 +41,65 @@ when 'windows'
   powershell_script 'win-update' do
     code <<-EOH
     $reg = "#{node['autopatch_ii']['updates_to_skip']}"
-    # Main Logic
+    $Criteria = "IsInstalled=0"
+    $Searcher = New-Object -ComObject Microsoft.Update.Searcher
+    Write-Output "Searching for updates."
     try
     {
-      Write-Output "Starting script..."
-      $UpdatesToDownload = New-Object -ComObject "Microsoft.Update.UpdateColl"
-      $objServiceManager = New-Object -ComObject "Microsoft.Update.ServiceManager" #Support local instance only
-      $objSession = New-Object -ComObject "Microsoft.Update.Session" #Support local instance only
-      $objSearcher = $objSession.CreateUpdateSearcher()
-      $search = "IsInstalled = 0"
-      Write-Output "Searching for new updates..."
-      try
+      $SearchResult = $Searcher.Search($Criteria).Updates
+      if ($SearchResult.Count -eq 0)
       {
-        $objResults = New-Object -ComObject "Microsoft.Update.UpdateColl"
-        $notInstalled = $objSearcher.Search($search)
-        foreach ($temp in $notInstalled.Updates)
+        Write-Output "There are no applicable updates."
+        Exit 0
+      }
+      else
+      {
+        Write-Output "Found $($SearchResult.Count) updates."
+        Write-Output "Applying filter."
+        $Updates = New-Object -ComObject Microsoft.Update.UpdateColl
+        foreach ($temp in $SearchResult)
         {
           if ($reg -eq "")
           {
-            $objResults.Add($temp) | Out-Null
+            $Updates.Add($temp) | out-null
           }
           else
           {
             if ($temp.Title -notmatch $reg)
             {
-              $objResults.Add($temp) | Out-Null
+              $Updates.Add($temp) | out-null
             }
           }
         }
-      }
-      catch
-      {
-        throw "An error occurred while search for updates to be installed."
-      } #End Catch
-
-      if ($objResults.Count -eq 0)
-      {
-        Write-Output "Found $($notInstalled.Updates.Count) new updates."
-        Write-Output "Found $($objResults.Count) after filter applied"
-        Write-Output "No selected updates found to be installed."
-        Exit 0
-      }
-      else
-      {
-        # There are updates to be installed.
-        Write-Output "Found $($notInstalled.Updates.Count) new updates."
-        Write-Output "Found $($objResults.Count) after filter applied."
-        foreach ($update in $objResults)
+	      if ($Updates.Count -eq 0)
         {
-          Write-Output "Update to install '$($update.Title)'"
+          Write-Output "After filter applied there are no applicable updates to install."
+          Exit 0
         }
-      }
-      # === Download Updates ===
-      Write-Output "Starting download of updates..."
-      $updDownloader = $objSession.CreateUpdateDownloader()
-      $DownloadedUpdateCollection = New-Object -ComObject "Microsoft.Update.UpdateColl"
-      foreach ($update in $objResults)
-      {
-        $objCollectionTmp = New-Object -ComObject "Microsoft.Update.UpdateColl"
-        $objCollectionTmp.Add($Update) | Out-Null
-        $Downloader = $objSession.CreateUpdateDownloader()
-        $Downloader.Updates = $objCollectionTmp
-        $DownloadResult = $Downloader.Download()
-        if(($DownloadResult.ResultCode -eq 2) -and ($($update.EulaAccepted) -eq $true))
-        {
-          Write-Output "$($update.Title) was successfully downloaded"
-          $DownloadedUpdateCollection.Add($Update) | Out-Null
-        } #End If $DownloadResult.ResultCode -eq 2 -and $($update.EulaAccepted) -eq $true)
-      }
-
-      if ($DownloadedUpdateCollection.Count -eq 0)
-      {
-        Throw "No updates were downloaded."
-      }
-      else
-      {
-        Write-Output "Updates to install:"
-        foreach ($update in $DownloadedUpdateCollection)
-        {
-          Write-Output "$($update.Title)"
-        }
-      }
-      #-==Install Update==-
-      Write-Output "Now installing downloaded updates..."
-      $NeedsReboot=$false
-      $UpdateInstallationReboot = New-Object -ComObject "Microsoft.Update.UpdateColl"
-      foreach ($update in $DownloadedUpdateCollection)
-      {
-        $objCollectionTmp = New-Object -ComObject "Microsoft.Update.UpdateColl"
-        $objCollectionTmp.Add($Update) | Out-Null
-        $objInstaller = $objSession.CreateUpdateInstaller()
-        $objInstaller.Updates = $objCollectionTmp
-        try
-        {
-          Write-Output "Trying to install update $($update.Title).."
-          $InstallResult = $objInstaller.Install()
-        } #End Try
-        catch
-        {
-          throw "Error installing update $($update.Title)."
-        } #End Catch
-
-        if ($InstallResult.ResultCode -eq 2)
-        {
-          Write-Output "Update $($update.Title) installation successfully completed"
-          if ($($Update.RebootRequired) -eq $true)
-          {
-            Write-Output "$($update.Title) requires reboot to be applied."
-            $UpdateInstallationReboot.Add($update)
-          }
-        }
-        # if any update from collection require reboot, then mark sign NeedsReboot as true
-        if (($NeedsReboot -eq $false) -and ($($Update.RebootRequired) -eq $true))
-        {
-          $NeedsReboot = $Update.RebootRequired
-        }
-      }
-
-      if ($UpdateInstallationReboot -ne 0)
-      {
-        Write-Output "Updates that require reboot to take effect:"
-        foreach ($update in $UpdateInstallationReboot)
-        {
-          Write-Output "$($update.Title)"
-        }
-      }
-
-      if($NeedsReboot) #checks if any update requires reboot after installation
-      {
-        $AutoRebootAllowed = $#{node['autopatch_ii']['auto_reboot_enabled']}
-        if($AutoRebootAllowed)
-        {
-          Write-Output "Reboot is required, and Auto reboot is allowed on this machine. Rebooting NOW!"
-          Restart-Computer -Force
-        } #End If $AutoReboot
         else
         {
-          Write-Output "Manual reboot required! AutoReboot is NOT allowed on this machine."
-          return "Reboot is required, but not allowed by settings. Please do the reboot manually."
-        } #End Else $AutoReboot If $IgnoreReboot
-      } #End If $NeedsReboot
-      else
-      {
-        Write-Output "Reboot is not required."
+          Write-Output "$($Updates.Count) Updates left to install after filter applied."
+          foreach ($temp in $Updates)
+          {
+            Write-Output $temp.Title
+          }
+        }
+        Write-Output "Downloading Updates."
+        $Session = New-Object -ComObject Microsoft.Update.Session
+        $Downloader = $Session.CreateUpdateDownloader()
+        $Downloader.Updates = $Updates
+        $Downloader.Download()
+        Write-Output "Installing Updates."
+        $Installer = New-Object -ComObject Microsoft.Update.Installer
+        $Installer.Updates = $Updates
+        $Result = $Installer.Install()
       }
     }
     catch
     {
-      Write-Output $Error[0]
-      Write-Output ($Error[0].ErrorRecord.Exception | gm)
+      Write-Output "Something went wrong during update process."
+      Write-Error ($_.Exception | Format-List -Force | Out-String) -ErrorAction Continue
+      Write-Error ($_.InvocationInfo | Format-List -Force | Out-String) -ErrorAction Continue
       Exit 1
     }
     EOH
