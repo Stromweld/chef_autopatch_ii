@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-::Chef::Recipe.include AutoPatchHelper
+::Chef::DSL::Recipe.include AutoPatchHelper
 
 template 'AutoPatch PowerShell Script' do
   source 'autopatch.ps1.erb'

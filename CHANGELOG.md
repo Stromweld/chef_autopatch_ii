@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.4.0 (2020/11/25)
+
+- [Corey Hemminger] - fixed linux script bugs and added windows filter to skip specific patches based on regex pattern
+
 ## 1.3.1 (2020/08/19)
 
 - [Corey Hemminger] - Updated linux recipe to install proper ubuntu email client and updated script templates to fix error

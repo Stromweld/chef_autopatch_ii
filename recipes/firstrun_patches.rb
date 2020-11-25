@@ -32,42 +32,82 @@ when 'linux'
   )
   execute 'linux-upgrade-once' do
     command cmd
-    action :nothing
     notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled']
+    notifies :create_if_missing, "file[#{Chef::Config[:file_cache_path]}/autopatch.txt]", :immediately
+    not_if { ::File.exist?("#{Chef::Config[:file_cache_path]}/autopatch.txt") }
   end
+
 when 'windows'
   powershell_script 'win-update' do
     code <<-EOH
-    Function WSUSUpdate {
-      $Criteria = "IsInstalled=0 and Type='Software'"
-      $Searcher = New-Object -ComObject Microsoft.Update.Searcher
-      try {
-        $SearchResult = $Searcher.Search($Criteria).Updates
-        if ($SearchResult.Count -eq 0) {
-          Write-Output "There are no applicable updates."
-          exit
-        }
-        else {
-          $Session = New-Object -ComObject Microsoft.Update.Session
-          $Downloader = $Session.CreateUpdateDownloader()
-          $Downloader.Updates = $SearchResult
-          $Downloader.Download()
-          $Installer = New-Object -ComObject Microsoft.Update.Installer
-          $Installer.Updates = $SearchResult
-          $Result = $Installer.Install()
-        }
-      }
-      catch {
+    $reg = "#{node['autopatch_ii']['updates_to_skip']}"
+    $Criteria = "IsInstalled=0"
+    $Searcher = New-Object -ComObject Microsoft.Update.Searcher
+    Write-Output "Searching for updates."
+    try
+    {
+      $SearchResult = $Searcher.Search($Criteria).Updates
+      if ($SearchResult.Count -eq 0)
+      {
         Write-Output "There are no applicable updates."
+        Exit 0
+      }
+      else
+      {
+        Write-Output "Found $($SearchResult.Count) updates."
+        Write-Output "Applying filter."
+        $Updates = New-Object -ComObject Microsoft.Update.UpdateColl
+        foreach ($temp in $SearchResult)
+        {
+          if ($reg -eq "")
+          {
+            $Updates.Add($temp) | out-null
+          }
+          else
+          {
+            if ($temp.Title -notmatch $reg)
+            {
+              $Updates.Add($temp) | out-null
+            }
+          }
+        }
+	      if ($Updates.Count -eq 0)
+        {
+          Write-Output "After filter applied there are no applicable updates to install."
+          Exit 0
+        }
+        else
+        {
+          Write-Output "$($Updates.Count) Updates left to install after filter applied."
+          foreach ($temp in $Updates)
+          {
+            Write-Output $temp.Title
+          }
+        }
+        Write-Output "Downloading Updates."
+        $Session = New-Object -ComObject Microsoft.Update.Session
+        $Downloader = $Session.CreateUpdateDownloader()
+        $Downloader.Updates = $Updates
+        $Downloader.Download()
+        Write-Output "Installing Updates."
+        $Installer = New-Object -ComObject Microsoft.Update.Installer
+        $Installer.Updates = $Updates
+        $Result = $Installer.Install()
       }
     }
-
-    WSUSUpdate
-    If ($Result.rebootRequired) { Restart-Computer }
+    catch
+    {
+      Write-Output "Something went wrong during update process."
+      Write-Error ($_.Exception | Format-List -Force | Out-String) -ErrorAction Continue
+      Write-Error ($_.InvocationInfo | Format-List -Force | Out-String) -ErrorAction Continue
+      Exit 1
+    }
     EOH
-    action :nothing
     ignore_failure true
+    live_stream true
     notifies :request_reboot, 'reboot[firstrun_patches]', :delayed if node['autopatch_ii']['auto_reboot_enabled']
+    notifies :create_if_missing, "file[#{Chef::Config[:file_cache_path]}/autopatch.txt]", :immediately
+    not_if { ::File.exist?("#{Chef::Config[:file_cache_path]}/autopatch.txt") }
   end
 else
   raise 'OS unsupported for firstrun_patches recipe'
@@ -75,8 +115,7 @@ end
 
 file "#{Chef::Config[:file_cache_path]}/autopatch.txt" do
   content 'First run of patches will only run if this file does not exist.'
-  action :create_if_missing
-  notifies :run, platform_family?('windows') ? 'powershell_script[win-update]' : 'execute[linux-upgrade-once]', :immediately
+  action :nothing
 end
 
 reboot 'firstrun_patches' do

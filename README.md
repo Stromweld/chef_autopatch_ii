@@ -34,14 +34,14 @@ Much of this code was copied from chef cookbook auto-patch written by Brian Flad
 | ['autopatch_ii']['task_start_time'] | '04:00' | String, 24h Time format for when to start patches |
 | ['autopatch_ii']['desired_timezone_name'] | nil | String, TZ database name <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones> |
 | ['autopatch_ii']['working_dir'] | node['os'] == 'windows' ? 'C:\chef_autopatch' : '/var/log/chef_autopatch' | String, Directory for log file and temp files |
-| ['autopatch_ii']['command'] | value_for_platform_family(windows: "PowerShell -ExecutionPolicy Bypass -Command \"#{node['autopatch_ii']['working_dir']}\\autopatch.ps1\"", default: '/usr/local/sbin/autopatch',) | String, cron command to start script |
+| ['autopatch_ii']['command'] | value_for_platform_family(windows: "PowerShell -ExecutionPolicy Bypass -Command \"#{node['autopatch_ii']['working_dir']}\\autopatch.ps1\"", default: '/usr/local/sbin/autopatch 2>&1',) | String, cron command to start script |
 | ['autopatch_ii']['download_install_splay_max_seconds'] | 3600 | Integer, Max allowed random time to wait before downloading and installing patches, this way we don't overwhelm on premise patch repo |
 | ['autopatch_ii']['email_notification_mode'] | 'Always' | String, whether to send email after patches and before reboot with status of patch install |
 | ['autopatch_ii']['email_to_addresses'] | '"test@example.com"' | String, email address for nodes to send the email to |
 | ['autopatch_ii']['email_from_address'] | "#{node['hostname']}@example.com" | String, email address the email came from |
 | ['autopatch_ii']['email_smtp_server'] | 'smtp.example.com' | String, email server to forward the email to, relay with no authentication is recommended |
 | ['autopatch_ii']['auto_reboot_enabled'] | true | Boolean, to reboot the server automatically after patches have been installed or to leave it for manual reboot |
-| ['autopatch_ii']['updates_to_skip'] | [] | Array of Strings, package names to skip during patches on linux |
+| ['autopatch_ii']['updates_to_skip'] | os.windows? ? '' : [] | Regex String to pass to windows -notmatch or Array of Strings, package names to skip during patches on linux |
 | ['autopatch_ii']['update_command_options'] | '' | String, any additional options to be passed to the yum command on linux |
 | ['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] | false | Boolean, DO NOT MODIFY THIS, this is modified programatically based on if cron job should skip this month or not |
 
