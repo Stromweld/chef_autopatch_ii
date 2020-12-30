@@ -60,8 +60,8 @@ class Chef
         )
 
         target_patch_time = if current_time_in_dtz > current_patch_time_in_dtz
-                              new_year = current_time_in_dtz.year == 12 ? current_time_in_dtz.year + 1 : current_time_in_dtz.year
-                              new_month = current_time_in_dtz.year == 12 ? 1 : current_time_in_dtz.month + 1
+                              new_year = current_time_in_dtz.month == 12 ? current_time_in_dtz.year + 1 : current_time_in_dtz.year
+                              new_month = current_time_in_dtz.month == 12 ? 1 : current_time_in_dtz.month + 1
                               Time.new(
                                 new_year,
                                 new_month,

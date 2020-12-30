@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.4.1 (2020/12/29)
+
+- [Corey Hemminger] - fixed bug in year/month rollover from december to january
+
 ## 1.4.0 (2020/11/25)
 
 - [Corey Hemminger] - fixed linux script bugs and added windows filter to skip specific patches based on regex pattern
