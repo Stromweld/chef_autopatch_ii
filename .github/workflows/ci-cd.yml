@@ -56,18 +56,18 @@ jobs:
           - windows-2022
         suite: [ 'default' ]
       fail-fast: false
-      steps:
-        - name: Check out code
-          uses: actions/checkout@master
-        - name: Install Chef
-          uses: actionshub/chef-install@master
-        - name: Test-Kitchen
-          uses: actionshub/test-kitchen@master
-          with:
-            suite: ${{ matrix.suite }}
-            os: ${{ matrix.os }}
-          env:
-            CHEF_LICENSE: accept-no-persist
+    steps:
+      - name: Check out code
+        uses: actions/checkout@master
+      - name: Install Chef
+        uses: actionshub/chef-install@master
+      - name: Test-Kitchen
+        uses: actionshub/test-kitchen@master
+        with:
+          suite: ${{ matrix.suite }}
+          os: ${{ matrix.os }}
+        env:
+          CHEF_LICENSE: accept-no-persist
 
   check:
     if: always()
