@@ -45,7 +45,7 @@ jobs:
           KITCHEN_LOCAL_YAML: kitchen.dokken.yml
 
   integration-windows:
-    runs-on: windows-latest
+    runs-on: macos-latest
     strategy:
       matrix:
         os:
@@ -60,7 +60,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@main
       - name: Install Vagrant and Virtualbox
-        run: choco install -y vagrant virtualbox
+        run: brew install vagrant virtualbox
       - name: Install Chef
         uses: actionshub/chef-install@main
       - name: Test-Kitchen
