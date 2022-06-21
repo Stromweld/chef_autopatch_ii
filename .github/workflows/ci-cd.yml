@@ -60,7 +60,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@main
       - name: Install Vagrant and Virtualbox
-        run: choco install vagrant virtualbox
+        run: choco install -y vagrant virtualbox
       - name: Install Chef
         uses: actionshub/chef-install@main
       - name: Test-Kitchen
