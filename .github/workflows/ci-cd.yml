@@ -1,0 +1,88 @@
+---
+on:
+  pull_request:
+
+jobs:
+  markdownlint:
+    uses: Stromweld/github-workflows/.github/workflows/markdownlint.yml@main
+
+  yamllint:
+    uses: Stromweld/github-workflows/.github/workflows/yamllint.yml@main
+
+  jsonlint:
+    uses: Stromweld/github-workflows/.github/workflows/jsonlint.yml@main
+
+  cookstylelint:
+    uses: Stromweld/github-workflows/.github/workflows/cookstylelint.yml@main
+
+  integration-dokken:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - amazonlinux-2
+          - amazonlinux-2022
+          - centos-7
+          - centos-8
+          - almalinux-8
+          - almalinux-9
+          - ubuntu-2004
+          - ubuntu-2204
+        suite: [ 'default' ]
+      fail-fast: false
+    steps:
+      - name: Check out code
+        uses: actions/checkout@master
+      - name: Install Chef
+        uses: actionshub/chef-install@master
+      - name: Test-Kitchen
+        uses: actionshub/test-kitchen@master
+        with:
+          suite: ${{ matrix.suite }}
+          os: ${{ matrix.os }}
+        env:
+          CHEF_LICENSE: accept-no-persist
+          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+
+  integration-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        os:
+          - windows-10
+          - windows-11
+          - windows-2016
+          - windows-2019
+          - windows-2022
+        suite: [ 'default' ]
+      fail-fast: false
+      steps:
+        - name: Check out code
+          uses: actions/checkout@master
+        - name: Install Chef
+          uses: actionshub/chef-install@master
+        - name: Test-Kitchen
+          uses: actionshub/test-kitchen@master
+          with:
+            suite: ${{ matrix.suite }}
+            os: ${{ matrix.os }}
+          env:
+            CHEF_LICENSE: accept-no-persist
+
+  check:
+    if: always()
+    needs:
+      - markdownlint
+      - yamllint
+      - jsonlint
+      - cookstylelint
+      - integration-dokken
+      - integration-windows
+    runs-on: Ubuntu-latest
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@main
+        with:
+          allowed-failures:
+          allowed-skips:
+          jobs: ${{ toJSON(needs) }}
