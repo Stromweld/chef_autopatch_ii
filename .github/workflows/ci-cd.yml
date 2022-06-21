@@ -21,11 +21,11 @@ jobs:
       matrix:
         os:
           - amazonlinux-2
-          - amazonlinux-2022
+#          - amazonlinux-2022
           - centos-7
           - centos-8
           - almalinux-8
-          - almalinux-9
+#          - almalinux-9
           - ubuntu-2004
           - ubuntu-2204
         suite: [ 'default' ]
@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@main
+      - name: Install Vagrant and Virtualbox
+        run: choco install vagrant virtualbox
       - name: Install Chef
         uses: actionshub/chef-install@main
       - name: Test-Kitchen
