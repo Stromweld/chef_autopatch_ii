@@ -1,6 +1,9 @@
 ---
 driver:
-  name: exec
+  name: vagrant
+  gui: false
+  customize:
+    memory: 4096
 
 transport:
   name: winrm
@@ -10,6 +13,12 @@ transport:
 #  name: exec
 
 platforms:
-  - name: windows-server-2016
-  - name: windows-server-2019
-  - name: windows-server-2022
+  - name: windows-2016
+    driver:
+      box: stromweld/windows-2016
+  - name: windows-2019
+    driver:
+      box: stromweld/windows-2019
+  - name: windows-2022
+    driver:
+      box: stromweld/windows-2022
