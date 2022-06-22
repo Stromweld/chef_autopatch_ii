@@ -5,7 +5,7 @@ driver:
   box_auto_prune: true
 
 provisioner:
-  name: chef_zero
+  name: chef_infra
   retry_on_exit_code:
     - 35 # 35 is the exit code signaling that the node is rebooting
   product_name: chef
