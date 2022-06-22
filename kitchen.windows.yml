@@ -5,10 +5,9 @@ driver:
 
 provisioner:
   require_chef_omnibus: false
-  # chef_client_path: "/opt/chef-workstation/bin/chef-client"
+  chef_client_path: 'C:/opscode/chef-workstation/bin/chef-client.bat'
   name: chef_zero
   deprecations_as_errors: false
-  log_level: :info
   install_strategy: skip
 
 platforms:
