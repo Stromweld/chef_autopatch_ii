@@ -93,7 +93,7 @@ jobs:
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
 
   integration-windows-2022:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       matrix:
         os:
