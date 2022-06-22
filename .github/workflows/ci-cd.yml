@@ -55,8 +55,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@main
-      - name: Install Vagrant and Virtualbox
-        run: brew install vagrant virtualbox
+#      - name: Install Vagrant and Virtualbox
+#        run: brew install vagrant virtualbox
       - name: Install Chef
         uses: actionshub/chef-install@main
       - name: Test-Kitchen
