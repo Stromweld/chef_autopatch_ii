@@ -44,17 +44,17 @@ jobs:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.dokken.yml
 
-  integration-windows:
-    runs-on: macos-latest
+  integration-windows-2016:
+    runs-on: windows-2016
     strategy:
       matrix:
         os:
           - windows-2016
-          - windows-2019
-          - windows-2022
         suite: [ 'default' ]
       fail-fast: false
     steps:
+      - name: Check windows Version
+        run: systeminfo
       - name: Check out code
         uses: actions/checkout@main
       - name: Install Chef
@@ -66,7 +66,55 @@ jobs:
           os: ${{ matrix.os }}
         env:
           CHEF_LICENSE: accept-no-persist
-#          KITCHEN_LOCAL_YAML: kitchen.exec.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
+
+  integration-windows-2019:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        os:
+          - windows-2019
+        suite: [ 'default' ]
+      fail-fast: false
+    steps:
+      - name: Check windows Version
+        run: systeminfo
+      - name: Check out code
+        uses: actions/checkout@main
+      - name: Install Chef
+        uses: actionshub/chef-install@main
+      - name: Test-Kitchen
+        uses: actionshub/test-kitchen@main
+        with:
+          suite: ${{ matrix.suite }}
+          os: ${{ matrix.os }}
+        env:
+          CHEF_LICENSE: accept-no-persist
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
+
+  integration-windows-2022:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        os:
+          - windows-2022
+        suite: [ 'default' ]
+      fail-fast: false
+    steps:
+      - name: Check windows Version
+        run: systeminfo
+      - name: Check out code
+        uses: actions/checkout@main
+      - name: Install Chef
+        uses: actionshub/chef-install@main
+      - name: Test-Kitchen
+        uses: actionshub/test-kitchen@main
+        with:
+          suite: ${{ matrix.suite }}
+          os: ${{ matrix.os }}
+        env:
+          CHEF_LICENSE: accept-no-persist
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
 
   check:
     if: always()
@@ -76,7 +124,9 @@ jobs:
       - jsonlint
       - cookstylelint
       - integration-dokken
-      - integration-windows
+      - integration-windows-2016
+      - integration-windows-2019
+      - integration-windows-2022
     runs-on: Ubuntu-latest
     steps:
       - name: Decide whether the needed jobs succeeded or failed
