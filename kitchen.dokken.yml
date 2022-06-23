@@ -13,14 +13,24 @@ provisioner:
   clean_dokken_sandbox: false
 
 platforms:
-  - name: amazonlinux
+  - name: almalinux-8
     driver:
-      image: dokken/amazonlinux
-      pid_one_command: /sbin/init
+      image: dokken/almalinux-8
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: almalinux-9
+    driver:
+      image: dokken/almalinux-9
+      pid_one_command: /usr/lib/systemd/systemd
 
   - name: amazonlinux-2
     driver:
       image: dokken/amazonlinux-2
+      pid_one_command: /usr/lib/systemd/systemd
+
+  - name: amazonlinux-2022
+    driver:
+      image: dokken/amazonlinux-2022
       pid_one_command: /usr/lib/systemd/systemd
 
   - name: centos-7
@@ -33,13 +43,6 @@ platforms:
       image: dokken/centos-8
       pid_one_command: /usr/lib/systemd/systemd
 
-  - name: debian-9
-    driver:
-      image: dokken/debian-9
-      pid_one_command: /bin/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/apt-get update
-
   - name: debian-10
     driver:
       image: dokken/debian-10
@@ -47,9 +50,9 @@ platforms:
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
 
-  - name: ubuntu-18.04
+  - name: debian-11
     driver:
-      image: dokken/ubuntu-18.04
+      image: dokken/debian-10
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
@@ -57,6 +60,13 @@ platforms:
   - name: ubuntu-20.04
     driver:
       image: dokken/ubuntu-20.04
+      pid_one_command: /bin/systemd
+      intermediate_instructions:
+        - RUN /usr/bin/apt-get update
+
+  - name: ubuntu-22.04
+    driver:
+      image: dokken/ubuntu-22.04
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update

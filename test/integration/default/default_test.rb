@@ -9,6 +9,6 @@ if os.windows?
   end
 else
   describe crontab(path: '/etc/cron.d/autopatch') do
-    its('commands') { should include '/usr/local/sbin/autopatch' }
+    its('commands') { should include '/usr/local/sbin/autopatch 2>&1' }
   end
 end

@@ -28,7 +28,7 @@ when 'linux'
               #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark unhold #{node['autopatch_ii']['updates_to_skip']&.to_s}"}
             EOS
             ),
-    default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip'].each { |skip| "-x #{skip}" } unless node['autopatch_ii']['updates_to_skip'].empty?}"
+    default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip']&.each { |skip| join('-x ', skip) } unless node['autopatch_ii']['updates_to_skip'].empty?}"
   )
   execute 'linux-upgrade-once' do
     command cmd

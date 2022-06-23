@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.4.2 (2022/06/13)
+
+- [Corey Hemminger] - Updated for github actions and CB modernization
+
 ## 1.4.1 (2020/12/29)
 
 - [Corey Hemminger] - fixed bug in year/month rollover from december to january

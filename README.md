@@ -13,7 +13,8 @@ Much of this code was copied from chef cookbook auto-patch written by Brian Flad
 ### Platforms
 
 * RHEL based platforms
-* Windows
+* Debian based platforms
+* Windows baased platforms
 
 ### Cookbooks
 
@@ -67,47 +68,6 @@ If you're auto patching many nodes at once, you can optionally modify the splay 
 
 * Adding `node["autopatch_ii"]["splay"]`
 
-### Using roles to specify auto patching groups
-
-If you'd like to specify groups of nodes for auto patching, you can setup roles.
-
-Say you want to auto patch some nodes at 8am and some at 10pm on your monthly
-"patch day" of the fourth Wednesday every month.
-
-If you have a base role (you do, right?), you can save duplicating attributes
-and specify some base information first:
-
-    "autopatch_ii" => {
-      "task_frequency" => :weekly,
-      "task_days" => 'TUE'
-    }
-
-Example role that then could be added to 8am nodes:
-
-    name "autopatch-0800"
-    description "Role for automatically patching nodes at 8am on patch day."
-    default_attributes(
-      "autopatch_ii" => {
-        "task_start_time" => '08:00'
-      }
-    )
-    run_list(
-      "recipe[autopatch_ii]"
-    )
-
-Example role that then could be added to 10pm nodes:
-
-    name "autopatch-2200"
-    description "Role for automatically patching nodes at 10pm on patch day."
-    default_attributes(
-      "autopatch_ii" => {
-        "task_start_time" => '22:00'
-      }
-    )
-    run_list(
-      "recipe[autopatch_ii]"
-    )
-
 ### Disabling automatic patching
 
 * Specify `node["autopatch_ii"]["disable"]` to true
@@ -119,7 +79,7 @@ Author:: Brian Flad (<bflad417@gmail.com>)
 
 Author:: Corey Hemminger (<hemminger@hotmail.com>)
 
-Copyright:: 2020
+Copyright:: 2022
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
