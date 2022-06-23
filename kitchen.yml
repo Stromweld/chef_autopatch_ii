@@ -30,43 +30,21 @@ platforms:
   - name: windows-10
     driver:
       box: stromweld/windows-10
-      gui: true
-      customize:
-        clipboard-mode: bidirectional
-        draganddrop: bidirectional
-        memory: 4096
   - name: windows-11
     driver:
       box: stromweld/windows-11
-      gui: true
-      customize:
-        clipboard-mode: bidirectional
-        draganddrop: bidirectional
-        memory: 4096
+  - name: windows-2012r2
+    driver:
+      box: stromweld/windows-2012r2
   - name: windows-2016
     driver:
       box: stromweld/windows-2016
-      gui: true
-      customize:
-        clipboard-mode: bidirectional
-        draganddrop: bidirectional
-        memory: 4096
   - name: windows-2019
     driver:
       box: stromweld/windows-2019
-      gui: true
-      customize:
-        clipboard-mode: bidirectional
-        draganddrop: bidirectional
-        memory: 4096
   - name: windows-2022
     driver:
       box: stromweld/windows-2022
-      gui: true
-      customize:
-        clipboard-mode: bidirectional
-        draganddrop: bidirectional
-        memory: 4096
 
 suites:
   - name: default
