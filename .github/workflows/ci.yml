@@ -79,7 +79,7 @@ jobs:
           action: converge
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
         continue-on-error: true
       - name: Test-Kitchen Verify
         uses: actionshub/test-kitchen@main
@@ -89,7 +89,7 @@ jobs:
           action: verify
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
 
   integration-windows-2019:
     runs-on: windows-2019
@@ -114,7 +114,7 @@ jobs:
           action: converge
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
         continue-on-error: true
       - name: Test-Kitchen Verify
         uses: actionshub/test-kitchen@main
@@ -124,7 +124,7 @@ jobs:
           action: verify
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
 
   integration-windows-2022:
     runs-on: windows-2022
@@ -149,7 +149,7 @@ jobs:
           action: converge
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
         continue-on-error: true
       - name: Test-Kitchen Verify
         uses: actionshub/test-kitchen@main
@@ -159,7 +159,7 @@ jobs:
           action: verify
         env:
           CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.dokken.yml
+          KITCHEN_LOCAL_YAML: kitchen.exec.yml
 
   check:
     if: always()
