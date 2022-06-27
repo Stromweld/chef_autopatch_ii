@@ -19,6 +19,10 @@
 case node['os']
 when 'linux'
   # Action is nothing so that normally no action is taken; :run needs to be specifically invoked by lockfile resource
+  skip_updates = ''
+  node['autopatch_ii']['updates_to_skip']&.each do |skip|
+    skip_updates << "-x #{skip} "
+  end
   cmd = value_for_platform_family(
     debian: (<<~EOS
               #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark hold #{node['autopatch_ii']['updates_to_skip']&.to_s}"}
@@ -28,7 +32,7 @@ when 'linux'
               #{node['autopatch_ii']['updates_to_skip'].empty? ? '' : "apt-mark unhold #{node['autopatch_ii']['updates_to_skip']&.to_s}"}
             EOS
             ),
-    default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{node['autopatch_ii']['updates_to_skip']&.each { |skip| join('-x ', skip) } unless node['autopatch_ii']['updates_to_skip'].empty?}"
+    default: "yum -y upgrade --nogpgcheck #{node['autopatch_ii']['update_command_options']} #{skip_updates unless node['autopatch_ii']['updates_to_skip'].empty?}"
   )
   execute 'linux-upgrade-once' do
     command cmd

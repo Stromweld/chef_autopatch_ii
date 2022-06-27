@@ -46,7 +46,7 @@ default['autopatch_ii']['update_command_options'] = '--skip-broken'
 # To skip specific KB's just list them with pipes inbetween like 'KB<number>|KB<number>|KB<number>'
 #
 # For Linux updates_to_skip should be an array of package names not to update
-default['autopatch_ii']['updates_to_skip'] = node['os'].include?('windows') ? '' : []
+default['autopatch_ii']['updates_to_skip'] = windows? ? '' : []
 
 # This attribute is used internally - it should never be set outside the cookbook itself, hence the 'private' designation
 default['autopatch_ii']['private_lin_autopatch_disabled_programmatically'] = false

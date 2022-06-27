@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 1.4.3 (2022/06/27)
+
+- [Corey Hemminger] - fix firstrun_patches bug introduced with previous cookstyle fix
+
 ## 1.4.2 (2022/06/13)
 
 - [Corey Hemminger] - Updated for github actions and CB modernization
