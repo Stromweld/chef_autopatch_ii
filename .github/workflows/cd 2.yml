@@ -1,0 +1,13 @@
+---
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  supermarket-deploy:
+    uses: Stromweld/github-workflows/.github/workflows/cookbook-supermarket-deploy.yml@main
+    secrets: inherit
+    with:
+      SUPERMARKET_USER: "stromweld"
+      SUPERMARKET_URL: "https://supermarket.chef.io"
