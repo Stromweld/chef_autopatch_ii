@@ -76,11 +76,8 @@ unless node['autopatch_ii']['disabled']
   end
 end
 
-# Ensure mailx is there to send notification emails - it should be, but just in case
-package value_for_platform_family(
-          debian: 's-nail',
-          default: 'mailx'
-        )
+# Ensure s-nail is there to send notification emails - it should be, but just in case
+package 's-nail'
 
 # Ensure the autopatch.log file is fresh each month and also so it doesn't infinitely grow.
 logrotate_app 'chef-autopatch' do

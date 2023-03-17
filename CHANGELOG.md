@@ -1,5 +1,9 @@
 # CHANGELOG for autopatch_ii
 
+## 2.0.0 (2023/03/17)
+
+- [Corey Hemminger] - update mailx to s-nail package install for latest rhel9 variants
+
 ## 1.4.3 (2022/06/27)
 
 - [Corey Hemminger] - fix firstrun_patches bug introduced with previous cookstyle fix

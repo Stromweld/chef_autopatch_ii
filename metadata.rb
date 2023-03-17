@@ -3,7 +3,7 @@ maintainer 'Corey Hemminger'
 maintainer_email 'hemminger@hotmail.com'
 license 'Apache-2.0'
 description 'Installs/Configures autopatch_ii'
-version '1.4.3'
+version '2.0.0'
 chef_version '>= 14.4'
 
 issues_url 'https://github.com/Stromweld/autopatch_ii/issues'
