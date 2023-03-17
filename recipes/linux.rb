@@ -77,9 +77,9 @@ unless node['autopatch_ii']['disabled']
 end
 
 # Ensure mailx is there to send notification emails - it should be, but just in case
-package value_for_platform_family(
-          debian: 's-nail',
-          default: 'mailx'
+package value_for_platform(
+          [:amazon, :rhel, :centos, :almalinux, :rocky] => { '< 9.0' => 'mailx' },
+          default: 's-nail'
         )
 
 # Ensure the autopatch.log file is fresh each month and also so it doesn't infinitely grow.

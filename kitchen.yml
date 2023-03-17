@@ -9,7 +9,6 @@ provisioner:
   retry_on_exit_code:
     - 35 # 35 is the exit code signaling that the node is rebooting
   product_name: chef
-  product_version: 17
   always_update_cookbooks: true
   deprecations_as_errors: true
   chef_license: accept-no-persist
@@ -21,7 +20,7 @@ platforms:
   - name: almalinux-8
   - name: almalinux-9
   - name: amazonlinux-2
-  # - name: amazonlinux-2022
+  # - name: amazonlinux-2023
   - name: centos-7
   - name: centos-8
   - name: debian-10

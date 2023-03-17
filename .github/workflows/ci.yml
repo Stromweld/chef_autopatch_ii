@@ -4,16 +4,16 @@ on:
 
 jobs:
   markdownlint:
-    uses: Stromweld/github-workflows/.github/workflows/markdownlint.yml@main
+    uses: chef/github-workflows/.github/workflows/markdown-lint.yml@main
 
   yamllint:
-    uses: Stromweld/github-workflows/.github/workflows/yamllint.yml@main
+    uses: chef/github-workflows/.github/workflows/yaml-lint.yml@main
 
   jsonlint:
-    uses: Stromweld/github-workflows/.github/workflows/jsonlint.yml@main
+    uses: chef/github-workflows/.github/workflows/json-lint.yml@main
 
   cookstylelint:
-    uses: Stromweld/github-workflows/.github/workflows/cookstylelint.yml@main
+    uses: chef/github-workflows/.github/workflows/cookstyle-lint.yml@main
 
   integration-dokken:
     runs-on: ubuntu-latest
@@ -21,11 +21,11 @@ jobs:
       matrix:
         os:
           - amazonlinux-2
-#          - amazonlinux-2022
+#          - amazonlinux-2023
           - centos-7
           - centos-8
           - almalinux-8
-#          - almalinux-9
+          - almalinux-9
           - ubuntu-2004
           - ubuntu-2204
         suite: [ 'default' ]
@@ -55,42 +55,6 @@ jobs:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.dokken.yml
 
-
-  integration-windows-2016:
-    runs-on: windows-2016
-    strategy:
-      matrix:
-        os:
-          - windows-2016
-        suite: [ 'default' ]
-      fail-fast: false
-    steps:
-      - name: Check windows Version
-        run: systeminfo
-      - name: Check out code
-        uses: actions/checkout@main
-      - name: Install Chef
-        uses: actionshub/chef-install@main
-      - name: Test-Kitchen Converge
-        uses: actionshub/test-kitchen@main
-        with:
-          suite: ${{ matrix.suite }}
-          os: ${{ matrix.os }}
-          action: converge
-        env:
-          CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.exec.yml
-        continue-on-error: true
-      - name: Test-Kitchen Verify
-        uses: actionshub/test-kitchen@main
-        with:
-          suite: ${{ matrix.suite }}
-          os: ${{ matrix.os }}
-          action: verify
-        env:
-          CHEF_LICENSE: accept-no-persist
-          KITCHEN_LOCAL_YAML: kitchen.exec.yml
-
   integration-windows-2019:
     runs-on: windows-2019
     strategy:
@@ -115,7 +79,7 @@ jobs:
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
-        continue-on-error: true
+        continue-on-error: false
       - name: Test-Kitchen Verify
         uses: actionshub/test-kitchen@main
         with:
@@ -150,7 +114,7 @@ jobs:
         env:
           CHEF_LICENSE: accept-no-persist
           KITCHEN_LOCAL_YAML: kitchen.exec.yml
-        continue-on-error: true
+        continue-on-error: false
       - name: Test-Kitchen Verify
         uses: actionshub/test-kitchen@main
         with:
@@ -169,7 +133,6 @@ jobs:
       - jsonlint
       - cookstylelint
       - integration-dokken
-      - integration-windows-2016
       - integration-windows-2019
       - integration-windows-2022
     runs-on: Ubuntu-latest
